@@ -29,6 +29,10 @@ public class ImageReference extends Rectangle{
         this.visible = false;
     }
 
+    public Boolean isVisible() {
+        return this.visible;
+    }
+
     public void startMoving() {
         moving = true;
     }
@@ -42,8 +46,8 @@ public class ImageReference extends Rectangle{
     }
 
     public void resetPosition(Float x, Float y) {
-        this.x = x + 91;
-        this.y = y + 145;
+        this.x = x;
+        this.y = y;
     }
 
 }

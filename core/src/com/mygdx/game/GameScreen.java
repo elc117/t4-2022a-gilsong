@@ -24,8 +24,8 @@ public class GameScreen implements Screen {
     SpriteBatch batch;
 	ImageReference dragonRef;
 	ImageReference fireballRef;
-	ImageReference backgroundRef;
-	ImageReference enemyRef;
+	Array<Enemy> enemies;
+	
 	OrthographicCamera camera;
 	Vector3 touchPos;
 
@@ -40,7 +40,7 @@ public class GameScreen implements Screen {
 		background = new Texture("background.png");
 		dragon = new Texture("dragon.gif");
 		fireball = new Texture("fireball1.gif");
-		enemy = new Texture("teste.png");
+		enemy = new Texture("teste1.png");
 		
 		// Init the camera objects.
 		camera = new OrthographicCamera();
@@ -48,11 +48,10 @@ public class GameScreen implements Screen {
 		touchPos = new Vector3();
 		
 		batch = new SpriteBatch();
-		
-		backgroundRef = new ImageReference(0f, 0f, 1280f, 720f);
 		dragonRef = new ImageReference(0f, 0f, 197f, 152f);
-		fireballRef = new ImageReference(dragonRef.x + 91, dragonRef.y + 145, 15f, 15f);
-		enemyRef = new ImageReference(600f, 300f, 225f, 225f);
+		fireballRef = new Fireball(dragonRef.x, dragonRef.y, 15f, 15f);
+		enemies = new Array<Enemy>();
+		spawnEnemies();
 	}
 
     @Override
@@ -66,20 +65,54 @@ public class GameScreen implements Screen {
         game.batch.draw(background, 0, 0);
 		game.batch.draw(fireball, fireballRef.x, fireballRef.y);
 		game.batch.draw(dragon, dragonRef.x, dragonRef.y);
-		game.batch.draw(enemy, enemyRef.x, enemyRef.y);
+		for (Enemy enemyRef: enemies) {
+			if (enemyRef.isVisible()) game.batch.draw(enemy, enemyRef.x, enemyRef.y);
+		}
 		game.batch.end();
 		
-		if (Gdx.input.isKeyPressed(Keys.LEFT)) dragonRef.x -= 200 * Gdx.graphics.getDeltaTime();
-        if (Gdx.input.isKeyPressed(Keys.RIGHT)) dragonRef.x += 200 * Gdx.graphics.getDeltaTime();	
-	
-		if (Gdx.input.isKeyPressed(Keys.LEFT) && !fireballRef.isMoving()) fireballRef.x -= 200 * Gdx.graphics.getDeltaTime();
-		if (Gdx.input.isKeyPressed(Keys.RIGHT) && !fireballRef.isMoving()) fireballRef.x += 200 * Gdx.graphics.getDeltaTime();
-
+		// controla movimento do dragão
+		if (Gdx.input.isKeyPressed(Keys.LEFT)) dragonRef.x -= 300 * Gdx.graphics.getDeltaTime();
+        if (Gdx.input.isKeyPressed(Keys.RIGHT)) dragonRef.x += 300 * Gdx.graphics.getDeltaTime();	
+		// controla movimento da bola de fogo
+		if (Gdx.input.isKeyPressed(Keys.LEFT) && !fireballRef.isMoving()) fireballRef.x -= 300 * Gdx.graphics.getDeltaTime();
+		if (Gdx.input.isKeyPressed(Keys.RIGHT) && !fireballRef.isMoving()) fireballRef.x += 300 * Gdx.graphics.getDeltaTime();
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) fireballRef.startMoving() ;
+		
 		if (fireballRef.isMoving() && fireballRef.y <= 722) fireballRef.y += 15;
 		if (fireballRef.y > 722) {
 			fireballRef.stopMoving();
 			fireballRef.resetPosition(dragonRef.x, dragonRef.y);
+		}
+
+		Iterator<Enemy> iter = enemies.iterator();
+		while (iter.hasNext()) {
+			Enemy enemyRef = iter.next();
+			//controla movimento do inimigo
+			if (enemyRef.isMoving() && enemyRef.y >= 130) enemyRef.y -= 0.2;
+			// se tocar na muralha
+			if (enemyRef.y < 130) {
+				enemyRef.resetPosition(enemyRef.x, enemyRef.y + 520f);
+			}
+
+			if(fireballRef.overlaps(enemyRef)) {
+				//som de morrendo
+				//dá pra aumentar pontos
+				iter.remove();
+				fireballRef.stopMoving();
+				fireballRef.resetPosition(dragonRef.x, dragonRef.y);
+			}
+		}
+
+	}
+
+	private void spawnEnemies() {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 10; j++) {
+				Enemy enemyRef = new Enemy(440f + 32 *j , 650f + 36*i, 32f, 36f);
+				enemyRef.startMoving();
+				enemyRef.setVisible();
+				enemies.add(enemyRef);
+			}
 		}
 	}
 
