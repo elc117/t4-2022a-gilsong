@@ -15,17 +15,21 @@ public class MyGdxGame extends ApplicationAdapter {
 	ImageReference fireballRef;
 	ImageReference backgroundRef;
 	
-	Animation<TextureRegion> dragonAnim;
-	Animation<TextureRegion> fireballAnim;
+	//Animation<TextureRegion> dragonAnim;
+	//Animation<TextureRegion> fireballAnim;
 	Texture background;
+	Texture dragon;
+	Texture fireball;
 	float elapsed;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		dragonAnim = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("dragon.gif").read());
-		fireballAnim = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("fireball1.gif").read());
+		//dragonAnim = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("dragon.gif").read());
+		//fireballAnim = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("fireball1.gif").read());
 		background = new Texture("background.png");
+		dragon = new Texture("dragon.gif");
+		fireball = new Texture("fireball1.gif");
 
 		backgroundRef = new ImageReference(0f, 0f, 1280f, 720f);
 		dragonRef = new ImageReference(0f, 0f, 197f, 152f);
@@ -39,8 +43,8 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		batch.begin();
 		batch.draw(background, 0, 0);
-		batch.draw(fireballAnim.getKeyFrame(elapsed), fireballRef.x, fireballRef.y);
-		batch.draw(dragonAnim.getKeyFrame(elapsed), dragonRef.x, dragonRef.y);
+		batch.draw(fireball, fireballRef.x, fireballRef.y);
+		batch.draw(dragon, dragonRef.x, dragonRef.y);
 		batch.end();
 
 		if (Gdx.input.isKeyPressed(Keys.LEFT)) dragonRef.x -= 200 * Gdx.graphics.getDeltaTime();
