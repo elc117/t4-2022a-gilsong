@@ -84,6 +84,7 @@ public class GameScreen implements Screen {
 			fireballRef.resetPosition(dragonRef.x, dragonRef.y);
 		}
 
+		if (enemies.isEmpty()) spawnEnemies();
 		Iterator<Enemy> iter = enemies.iterator();
 		while (iter.hasNext()) {
 			Enemy enemyRef = iter.next();
@@ -106,9 +107,11 @@ public class GameScreen implements Screen {
 	}
 
 	private void spawnEnemies() {
+
+		float inicio = MathUtils.random(20, 960);
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 10; j++) {
-				Enemy enemyRef = new Enemy(440f + 32 *j , 650f + 36*i, 32f, 36f);
+				Enemy enemyRef = new Enemy(inicio + 32 *j , 650f + 36*i, 32f, 36f);
 				enemyRef.startMoving();
 				enemyRef.setVisible();
 				enemies.add(enemyRef);
