@@ -25,13 +25,14 @@ public class GameScreen implements Screen {
 	ImageReference dragonRef;
 	ImageReference fireballRef;
 	ImageReference backgroundRef;
+	ImageReference enemyRef;
 	OrthographicCamera camera;
 	Vector3 touchPos;
 
 	Texture background;
 	Texture dragon;
 	Texture fireball;
-	float elapsed;
+	Texture enemy;
 
     public GameScreen(final ThroneInvaders passed_game) {
 		game = passed_game; 
@@ -39,6 +40,7 @@ public class GameScreen implements Screen {
 		background = new Texture("background.png");
 		dragon = new Texture("dragon.gif");
 		fireball = new Texture("fireball1.gif");
+		enemy = new Texture("teste.png");
 		
 		// Init the camera objects.
 		camera = new OrthographicCamera();
@@ -50,11 +52,11 @@ public class GameScreen implements Screen {
 		backgroundRef = new ImageReference(0f, 0f, 1280f, 720f);
 		dragonRef = new ImageReference(0f, 0f, 197f, 152f);
 		fireballRef = new ImageReference(dragonRef.x + 91, dragonRef.y + 145, 15f, 15f);
+		enemyRef = new ImageReference(600f, 300f, 225f, 225f);
 	}
 
     @Override
 	public void render(float delta) {
-        elapsed += Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(0, 0, .2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
@@ -64,6 +66,7 @@ public class GameScreen implements Screen {
         game.batch.draw(background, 0, 0);
 		game.batch.draw(fireball, fireballRef.x, fireballRef.y);
 		game.batch.draw(dragon, dragonRef.x, dragonRef.y);
+		game.batch.draw(enemy, enemyRef.x, enemyRef.y);
 		game.batch.end();
 		
 		if (Gdx.input.isKeyPressed(Keys.LEFT)) dragonRef.x -= 200 * Gdx.graphics.getDeltaTime();
