@@ -34,15 +34,15 @@ public class ImageReference extends Rectangle{
     }
 
     public void startMoving() {
-        moving = true;
+        this.moving = true;
     }
 
     public void stopMoving() {
-        moving = false;
+        this.moving = false;
     }
 
     public Boolean isMoving() {
-        return moving;
+        return this.moving;
     }
 
     public void resetPosition(Float x, Float y) {

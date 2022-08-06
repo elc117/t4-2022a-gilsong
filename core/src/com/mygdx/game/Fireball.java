@@ -9,14 +9,12 @@ public class Fireball extends ImageReference {
     }
 
     public Fireball(Float x, Float y, Float width, Float height) {
-        super(x + 91, y + 145, width, height);
+        super(x + 95, y + 115, width, height);
     }
 
     @Override
     public void resetPosition(Float x, Float y) {
-        this.x = x + 91;
-        this.y = y + 145;
-    }
-
-    
+        this.x = x + 95;
+        this.y = y + 115;
+    }  
 }

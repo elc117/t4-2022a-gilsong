@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import java.util.Iterator;
 
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
@@ -17,6 +18,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameScreen implements Screen {
     final ThroneInvaders game;
@@ -25,22 +32,30 @@ public class GameScreen implements Screen {
 	ImageReference dragonRef;
 	ImageReference fireballRef;
 	Array<Enemy> enemies;
-	
+
+	Frames enemyFrames;
+   	Animation<TextureRegion> enemyAnimation;
+
+	Frames dragonFrames;
+   	Animation<TextureRegion> dragonAnimation;
+   	
 	OrthographicCamera camera;
 	Vector3 touchPos;
 
 	Texture background;
-	Texture dragon;
 	Texture fireball;
-	Texture enemy;
+
+	float elapsedTime;
 
     public GameScreen(final ThroneInvaders passed_game) {
 		game = passed_game; 
 		
 		background = new Texture("background.png");
-		dragon = new Texture("dragon.gif");
 		fireball = new Texture("fireball1.gif");
-		enemy = new Texture("teste1.png");
+		dragonFrames = new Frames(0, 4, 2, 205, 155, "dragon.png");
+		enemyFrames = new Frames(10, 7, 1, 64, 64, "enemy.png");
+		dragonFrames.createFrames();
+		enemyFrames.createFrames();
 		
 		// Init the camera objects.
 		camera = new OrthographicCamera();
@@ -48,14 +63,18 @@ public class GameScreen implements Screen {
 		touchPos = new Vector3();
 		
 		batch = new SpriteBatch();
-		dragonRef = new ImageReference(0f, 0f, 197f, 152f);
+		dragonRef = new ImageReference(0f, 0f, 205f, 155f);
 		fireballRef = new Fireball(dragonRef.x, dragonRef.y, 15f, 15f);
 		enemies = new Array<Enemy>();
+
+		dragonAnimation = new Animation<TextureRegion>(1f/6f, dragonFrames.getAnimationFrames());
+      	enemyAnimation = new Animation<TextureRegion>(1f/4f, enemyFrames.getAnimationFrames());
 		spawnEnemies();
 	}
 
     @Override
 	public void render(float delta) {
+		elapsedTime += Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(0, 0, .2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
@@ -63,10 +82,10 @@ public class GameScreen implements Screen {
 		game.batch.setProjectionMatrix(camera.combined);
 		game.batch.begin();
         game.batch.draw(background, 0, 0);
-		game.batch.draw(fireball, fireballRef.x, fireballRef.y);
-		game.batch.draw(dragon, dragonRef.x, dragonRef.y);
+		if (fireballRef.isVisible()) game.batch.draw(fireball, fireballRef.x, fireballRef.y);
+		game.batch.draw(dragonAnimation.getKeyFrame(elapsedTime, true), dragonRef.x, dragonRef.y);
 		for (Enemy enemyRef: enemies) {
-			if (enemyRef.isVisible()) game.batch.draw(enemy, enemyRef.x, enemyRef.y);
+			game.batch.draw(enemyAnimation.getKeyFrame(elapsedTime,true), enemyRef.x, enemyRef.y);
 		}
 		game.batch.end();
 		
@@ -76,11 +95,14 @@ public class GameScreen implements Screen {
 		// controla movimento da bola de fogo
 		if (Gdx.input.isKeyPressed(Keys.LEFT) && !fireballRef.isMoving()) fireballRef.x -= 300 * Gdx.graphics.getDeltaTime();
 		if (Gdx.input.isKeyPressed(Keys.RIGHT) && !fireballRef.isMoving()) fireballRef.x += 300 * Gdx.graphics.getDeltaTime();
-		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) fireballRef.startMoving() ;
-		
+		if (Gdx.input.isKeyJustPressed(Keys.SPACE)){
+			fireballRef.startMoving(); 
+			fireballRef.setVisible();
+		}
 		if (fireballRef.isMoving() && fireballRef.y <= 722) fireballRef.y += 15;
 		if (fireballRef.y > 722) {
 			fireballRef.stopMoving();
+			fireballRef.setUnvisible();
 			fireballRef.resetPosition(dragonRef.x, dragonRef.y);
 		}
 
@@ -100,6 +122,7 @@ public class GameScreen implements Screen {
 				//dá pra aumentar pontos
 				iter.remove();
 				fireballRef.stopMoving();
+				fireballRef.setUnvisible();
 				fireballRef.resetPosition(dragonRef.x, dragonRef.y);
 			}
 		}
@@ -111,7 +134,7 @@ public class GameScreen implements Screen {
 		float inicio = MathUtils.random(20, 960);
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 10; j++) {
-				Enemy enemyRef = new Enemy(inicio + 32 *j , 650f + 36*i, 32f, 36f);
+				Enemy enemyRef = new Enemy(inicio + 45 *j , 650f + 50*i, 64f, 64f);
 				enemyRef.startMoving();
 				enemyRef.setVisible();
 				enemies.add(enemyRef);

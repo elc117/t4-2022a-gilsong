@@ -1,5 +1,4 @@
 package com.mygdx.game;
-import com.mygdx.game.ImageReference;
 
 public class Enemy extends ImageReference {
     public Enemy(){
