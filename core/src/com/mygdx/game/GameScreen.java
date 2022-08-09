@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -45,9 +46,13 @@ public class GameScreen implements Screen {
 	Texture background;
 	Texture fireball;
 
-	float elapsedTime;
+    Sound fireballSound;
+    Sound damageSound;
 
-    public GameScreen(final ThroneInvaders passed_game) {
+	float elapsedTime;
+    int score;
+
+    public GameScreen(final ThroneInvaders passed_game, Music musica) {
 		game = passed_game; 
 		
 		background = new Texture("background.png");
@@ -70,12 +75,19 @@ public class GameScreen implements Screen {
 		dragonAnimation = new Animation<TextureRegion>(1f/6f, dragonFrames.getAnimationFrames());
       	enemyAnimation = new Animation<TextureRegion>(1f/4f, enemyFrames.getAnimationFrames());
 		spawnEnemies();
+
+        fireballSound = Gdx.audio.newSound(Gdx.files.internal("fireballSound.mp3"));
+        damageSound = Gdx.audio.newSound(Gdx.files.internal("DamageSound.mp3"));
+
+        score = 0;
 	}
 
     @Override
 	public void render(float delta) {
 		elapsedTime += Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(0, 0, .2f, 1);
+        game.font.setColor(Color.BLACK);
+        game.font.getData().setScale(3);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		
@@ -87,6 +99,7 @@ public class GameScreen implements Screen {
 		for (ImageReference enemyRef: enemies) {
 			game.batch.draw(enemyAnimation.getKeyFrame(elapsedTime,true), enemyRef.x, enemyRef.y);
 		}
+        game.font.draw(game.batch, Integer.toString(score) , 30,650);
 		game.batch.end();
 		
 		// controla movimento do dragão
@@ -95,8 +108,8 @@ public class GameScreen implements Screen {
 		// controla movimento da bola de fogo
 		if (Gdx.input.isKeyPressed(Keys.LEFT) && !fireballRef.isMoving()) fireballRef.x -= 300 * Gdx.graphics.getDeltaTime();
 		if (Gdx.input.isKeyPressed(Keys.RIGHT) && !fireballRef.isMoving()) fireballRef.x += 300 * Gdx.graphics.getDeltaTime();
-		if (Gdx.input.isKeyJustPressed(Keys.SPACE)){
-			//som do dragão
+		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && !fireballRef.isMoving()){
+			fireballSound.play(0.5f);
 			fireballRef.startMoving(); 
 			fireballRef.setVisible();
 		}
@@ -116,11 +129,12 @@ public class GameScreen implements Screen {
 			// se tocar na muralha
 			if (enemyRef.y < 130) {
 				enemyRef.resetPosition(enemyRef.x, enemyRef.y + 520f);
+                //end-game
 			}
 
 			if(fireballRef.overlaps(enemyRef)) {
-				//som de morrendo
-				//dá pra aumentar pontos
+				damageSound.play(0.5f);
+				score += 10;
 				iter.remove();
 				fireballRef.stopMoving();
 				fireballRef.setUnvisible();
@@ -131,7 +145,6 @@ public class GameScreen implements Screen {
 	}
 
 	private void spawnEnemies() {
-
 		float inicio = MathUtils.random(20, 900);
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 10; j++) {

@@ -3,13 +3,20 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 
 public class MainMenuScreen implements Screen {
     final ThroneInvaders game;
 	static private int WIDTH = 1280;
 	static private int HEIGHT = 720;
+
+	Texture background;
+	Texture logo;
+
+	Music musica;
 
     OrthographicCamera camera;
 
@@ -18,6 +25,10 @@ public class MainMenuScreen implements Screen {
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WIDTH, HEIGHT);
+		background = new Texture("blurredbackground.png");
+		logo = new Texture("THRONE logo.png");
+		musica = Gdx.audio.newMusic(Gdx.files.internal("they_are_coming.mp3"));
+
 	}
 
     @Override
@@ -29,13 +40,13 @@ public class MainMenuScreen implements Screen {
 		game.batch.setProjectionMatrix(camera.combined);
 		
 		game.batch.begin();
-		game.font.draw(game.batch, "Welcome to Throne Invaders!!", 100, 150);
-		game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
+		game.batch.draw(background, 0, 0);
+		game.batch.draw(logo, 380, 150);
 		game.batch.end();
 		
 		// If player activates the game, dispose of this menu.
 		if (Gdx.input.isTouched()) {
-			game.setScreen(new GameScreen(game));
+			game.setScreen(new GameScreen(game, musica));	
 			dispose();
 		}
 
@@ -49,7 +60,9 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
+		musica.setLooping(true);
+		musica.setVolume(0.1f);
+		musica.play();
 		
 	}
 
