@@ -31,7 +31,7 @@ public class GameScreen implements Screen {
     SpriteBatch batch;
 	ImageReference dragonRef;
 	ImageReference fireballRef;
-	Array<Enemy> enemies;
+	Array<ImageReference> enemies;
 
 	Frames enemyFrames;
    	Animation<TextureRegion> enemyAnimation;
@@ -65,7 +65,7 @@ public class GameScreen implements Screen {
 		batch = new SpriteBatch();
 		dragonRef = new ImageReference(0f, 0f, 205f, 155f);
 		fireballRef = new Fireball(dragonRef.x, dragonRef.y, 15f, 15f);
-		enemies = new Array<Enemy>();
+		enemies = new Array<ImageReference>();
 
 		dragonAnimation = new Animation<TextureRegion>(1f/6f, dragonFrames.getAnimationFrames());
       	enemyAnimation = new Animation<TextureRegion>(1f/4f, enemyFrames.getAnimationFrames());
@@ -84,7 +84,7 @@ public class GameScreen implements Screen {
         game.batch.draw(background, 0, 0);
 		if (fireballRef.isVisible()) game.batch.draw(fireball, fireballRef.x, fireballRef.y);
 		game.batch.draw(dragonAnimation.getKeyFrame(elapsedTime, true), dragonRef.x, dragonRef.y);
-		for (Enemy enemyRef: enemies) {
+		for (ImageReference enemyRef: enemies) {
 			game.batch.draw(enemyAnimation.getKeyFrame(elapsedTime,true), enemyRef.x, enemyRef.y);
 		}
 		game.batch.end();
@@ -96,6 +96,7 @@ public class GameScreen implements Screen {
 		if (Gdx.input.isKeyPressed(Keys.LEFT) && !fireballRef.isMoving()) fireballRef.x -= 300 * Gdx.graphics.getDeltaTime();
 		if (Gdx.input.isKeyPressed(Keys.RIGHT) && !fireballRef.isMoving()) fireballRef.x += 300 * Gdx.graphics.getDeltaTime();
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE)){
+			//som do dragão
 			fireballRef.startMoving(); 
 			fireballRef.setVisible();
 		}
@@ -107,9 +108,9 @@ public class GameScreen implements Screen {
 		}
 
 		if (enemies.isEmpty()) spawnEnemies();
-		Iterator<Enemy> iter = enemies.iterator();
+		Iterator<ImageReference> iter = enemies.iterator();
 		while (iter.hasNext()) {
-			Enemy enemyRef = iter.next();
+			ImageReference enemyRef = iter.next();
 			//controla movimento do inimigo
 			if (enemyRef.isMoving() && enemyRef.y >= 130) enemyRef.y -= 0.2;
 			// se tocar na muralha
@@ -131,10 +132,10 @@ public class GameScreen implements Screen {
 
 	private void spawnEnemies() {
 
-		float inicio = MathUtils.random(20, 960);
+		float inicio = MathUtils.random(20, 900);
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 10; j++) {
-				Enemy enemyRef = new Enemy(inicio + 45 *j , 650f + 50*i, 64f, 64f);
+				ImageReference enemyRef = new ImageReference(inicio + 45 *j , 650f + 50*i, 64f, 64f);
 				enemyRef.startMoving();
 				enemyRef.setVisible();
 				enemies.add(enemyRef);
