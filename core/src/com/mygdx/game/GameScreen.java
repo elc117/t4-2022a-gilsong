@@ -32,25 +32,31 @@ public class GameScreen implements Screen {
     SpriteBatch batch;
 	ImageReference dragonRef;
 	ImageReference fireballRef;
-	Array<ImageReference> enemies;
+	Array<EnemyReference> enemies;
+	Array<ImageReference> spires;
 
 	Frames enemyFrames;
    	Animation<TextureRegion> enemyAnimation;
 
 	Frames dragonFrames;
    	Animation<TextureRegion> dragonAnimation;
+
    	
 	OrthographicCamera camera;
 	Vector3 touchPos;
 
 	Texture background;
 	Texture fireball;
+    Texture spire;
+
+	Music musica;
 
     Sound fireballSound;
     Sound damageSound;
 
 	float elapsedTime;
     int score;
+	float timeSeconds;
 
     public GameScreen(final ThroneInvaders passed_game, Music musica) {
 		game = passed_game; 
@@ -59,6 +65,7 @@ public class GameScreen implements Screen {
 		fireball = new Texture("fireball1.gif");
 		dragonFrames = new Frames(0, 4, 2, 205, 155, "dragon.png");
 		enemyFrames = new Frames(10, 7, 1, 64, 64, "enemy.png");
+		spire = new Texture("DragonLancesY.png");
 		dragonFrames.createFrames();
 		enemyFrames.createFrames();
 		
@@ -70,20 +77,23 @@ public class GameScreen implements Screen {
 		batch = new SpriteBatch();
 		dragonRef = new ImageReference(0f, 0f, 205f, 155f);
 		fireballRef = new Fireball(dragonRef.x, dragonRef.y, 15f, 15f);
-		enemies = new Array<ImageReference>();
+		enemies = new Array<EnemyReference>();
+		spires = new Array<ImageReference>();
 
 		dragonAnimation = new Animation<TextureRegion>(1f/6f, dragonFrames.getAnimationFrames());
       	enemyAnimation = new Animation<TextureRegion>(1f/4f, enemyFrames.getAnimationFrames());
-		spawnEnemies();
+		spawnEnemies(10, 5);
 
         fireballSound = Gdx.audio.newSound(Gdx.files.internal("fireballSound.mp3"));
         damageSound = Gdx.audio.newSound(Gdx.files.internal("DamageSound.mp3"));
 
+		this.musica = musica;
         score = 0;
 	}
 
     @Override
 	public void render(float delta) {
+		timeSeconds += Gdx.graphics.getDeltaTime();
 		elapsedTime += Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(0, 0, .2f, 1);
         game.font.setColor(Color.BLACK);
@@ -96,18 +106,21 @@ public class GameScreen implements Screen {
         game.batch.draw(background, 0, 0);
 		if (fireballRef.isVisible()) game.batch.draw(fireball, fireballRef.x, fireballRef.y);
 		game.batch.draw(dragonAnimation.getKeyFrame(elapsedTime, true), dragonRef.x, dragonRef.y);
-		for (ImageReference enemyRef: enemies) {
+		for (EnemyReference enemyRef: enemies) {
 			game.batch.draw(enemyAnimation.getKeyFrame(elapsedTime,true), enemyRef.x, enemyRef.y);
+		}
+		for (ImageReference spireRef: spires) {
+			if (spireRef.isVisible()) game.batch.draw(spire, spireRef.x, spireRef.y);
 		}
         game.font.draw(game.batch, Integer.toString(score) , 30,650);
 		game.batch.end();
 		
 		// controla movimento do dragão
-		if (Gdx.input.isKeyPressed(Keys.LEFT)) dragonRef.x -= 300 * Gdx.graphics.getDeltaTime();
-        if (Gdx.input.isKeyPressed(Keys.RIGHT)) dragonRef.x += 300 * Gdx.graphics.getDeltaTime();	
+		if (Gdx.input.isKeyPressed(Keys.LEFT) && dragonRef.x >= 0) dragonRef.x -= 300 * Gdx.graphics.getDeltaTime();
+        if (Gdx.input.isKeyPressed(Keys.RIGHT)&& dragonRef.x <= 1075) dragonRef.x += 300 * Gdx.graphics.getDeltaTime();	
 		// controla movimento da bola de fogo
-		if (Gdx.input.isKeyPressed(Keys.LEFT) && !fireballRef.isMoving()) fireballRef.x -= 300 * Gdx.graphics.getDeltaTime();
-		if (Gdx.input.isKeyPressed(Keys.RIGHT) && !fireballRef.isMoving()) fireballRef.x += 300 * Gdx.graphics.getDeltaTime();
+		if (Gdx.input.isKeyPressed(Keys.LEFT) && !fireballRef.isMoving() && dragonRef.x >= 0) fireballRef.x -= 300 * Gdx.graphics.getDeltaTime();
+		if (Gdx.input.isKeyPressed(Keys.RIGHT) && !fireballRef.isMoving() && dragonRef.x <= 1075) fireballRef.x += 300 * Gdx.graphics.getDeltaTime();
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && !fireballRef.isMoving()){
 			fireballSound.play(0.5f);
 			fireballRef.startMoving(); 
@@ -120,19 +133,21 @@ public class GameScreen implements Screen {
 			fireballRef.resetPosition(dragonRef.x, dragonRef.y);
 		}
 
-		if (enemies.isEmpty()) spawnEnemies();
-		Iterator<ImageReference> iter = enemies.iterator();
+		if (enemies.isEmpty()) spawnEnemies(10,5);
+		Iterator<EnemyReference> iter = enemies.iterator();
 		while (iter.hasNext()) {
-			ImageReference enemyRef = iter.next();
+			EnemyReference enemyRef = iter.next();
 			//controla movimento do inimigo
 			if (enemyRef.isMoving() && enemyRef.y >= 130) enemyRef.y -= 0.2;
 			// se tocar na muralha
 			if (enemyRef.y < 130) {
-				enemyRef.resetPosition(enemyRef.x, enemyRef.y + 520f);
-                //end-game
+				enemyRef.resetPosition(enemyRef.x, enemyRef.y + 720f);
+				musica.stop();
+                game.setScreen(new EndGameScreen(game, score, musica));	
+				dispose();
 			}
 
-			if(fireballRef.overlaps(enemyRef)) {
+			if (fireballRef.overlaps(enemyRef)) {
 				damageSound.play(0.5f);
 				score += 10;
 				iter.remove();
@@ -142,16 +157,63 @@ public class GameScreen implements Screen {
 			}
 		}
 
+		if (spires.isEmpty()) spawnSpires();
+		Iterator<ImageReference> iter1 = spires.iterator();
+		while (iter1.hasNext()) {
+			ImageReference spireRef = iter1.next();
+
+			if (spireRef.isMoving()) spireRef.y -= 3;
+
+			if(spireRef.y < -100) iter1.remove();
+
+			if (spireRef.overlaps(dragonRef)){
+				spireRef.setUnvisible();
+				musica.stop();
+				game.setScreen(new EndGameScreen(game, score, musica));	
+
+			}
+		}
+		if (timeSeconds >= 5) {
+			setShots(7);
+			timeSeconds = 0;
+		}
 	}
 
-	private void spawnEnemies() {
-		float inicio = MathUtils.random(20, 900);
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 10; j++) {
-				ImageReference enemyRef = new ImageReference(inicio + 45 *j , 650f + 50*i, 64f, 64f);
+	private void spawnEnemies(int weight, int height) {
+		float inicio = MathUtils.random(20, 700);
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < weight; j++) {
+				EnemyReference enemyRef = new EnemyReference(inicio + 45 *j , 720f + 50*i, 64f, 64f);
 				enemyRef.startMoving();
 				enemyRef.setVisible();
-				enemies.add(enemyRef);
+				this.enemies.add(enemyRef);
+			}
+		}
+	}
+
+	private void spawnSpires() {
+		for (EnemyReference enemyRef: enemies) {
+			ImageReference spireRef = new ImageReference(enemyRef.x, enemyRef.y, 36f, 36f);
+			spires.add(spireRef);
+		}
+	}
+
+	private void setShots(int numOfShots) {
+		if (enemies.size < numOfShots) {
+			numOfShots = enemies.size;
+		}
+		Iterator<ImageReference> iter = spires.iterator();
+
+		for (int i = 0; i < numOfShots; i++) {
+			int pos = MathUtils.random(0, enemies.size - 1);
+			EnemyReference enemyRef = enemies.get(pos);
+
+			if (iter.hasNext()) {
+				ImageReference spireRef = iter.next();
+				spireRef.x = enemyRef.x;
+				spireRef.y = enemyRef.y;
+				spireRef.setVisible();
+				spireRef.startMoving();
 			}
 		}
 	}

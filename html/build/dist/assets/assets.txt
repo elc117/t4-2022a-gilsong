@@ -1,9 +1,18 @@
 d:assets:assets:0:application/unknown:1
 i:background.png:background-d91cc514cb71db1bd82594b134e2e7bc.png:532368:image/png:1
+i:blurredbackground.png:blurredbackground-7d3bbe86427d0a5eb7e597bbdca70531.png:349560:image/png:1
+a:DamageSound.mp3:DamageSound-1974ab4c0951b7e6a38584b953257801.mp3:16428:audio/mpeg:1
 i:dragon.png:dragon-9769cdc8af9a754137b7cc2ce4718176.png:199015:image/png:1
+i:DragonLances.png:DragonLances-98cb7a50f7c8c093abb1da8b712d3a8c.png:4308:image/png:1
+i:DragonLancesG.png:DragonLancesG-557481cd3f1958c54aa37a6c60d8d034.png:1707:image/png:1
+i:DragonLancesR.png:DragonLancesR-a832ecb737da7758aa77b30682dded04.png:1730:image/png:1
+i:DragonLancesY.png:DragonLancesY-791c0ad1738567c63df8df9f09d2760c.png:1691:image/png:1
 i:enemy.png:enemy-03f030dfa78f39bc327a5277e38cc189.png:85322:image/png:1
 i:fireball.gif:fireball-25770873159d9874bd28d8d7e94f08fb.gif:3844:image/gif:1
 i:fireball1.gif:fireball1-4f5fb380005401c48fe0f2c0e2e5d50d.gif:1172:image/gif:1
+a:fireballSound.mp3:fireballSound-c555824c3adbf67109afe71e02e2f07c.mp3:27885:audio/mpeg:1
+a:they_are_coming.mp3:they_are_coming-18286f6ea2d184b5c8bc9b46b4d3dadf.mp3:2253828:audio/mpeg:1
+i:THRONE logo.png:THRONE logo-c4a315e20f1034d7734500e39387d6ea.png:26854:image/png:1
 t:com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl:particles.fragment-b90524761fdf09b0a836056d590c30b8.glsl:820:application/unknown:1
 t:com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl:particles.vertex-f25b8b2fae10b9bfa09bfdd484923148.glsl:2886:application/unknown:1
 t:com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl:default.fragment-e1c018bd48044c8b67c7bbc53145e540.glsl:5874:application/unknown:1

@@ -7,6 +7,13 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+
+
 
 public class MainMenuScreen implements Screen {
     final ThroneInvaders game;
@@ -20,6 +27,13 @@ public class MainMenuScreen implements Screen {
 
     OrthographicCamera camera;
 
+	/*private Stage stage;
+    private Texture myTexture;
+    private TextureRegion myTextureRegion;
+    private TextureRegionDrawable myTexRegionDrawable;
+    private ImageButton button;*/
+
+
     public MainMenuScreen(final ThroneInvaders passed_game) {
 		game = passed_game;
 		
@@ -28,6 +42,7 @@ public class MainMenuScreen implements Screen {
 		background = new Texture("blurredbackground.png");
 		logo = new Texture("THRONE logo.png");
 		musica = Gdx.audio.newMusic(Gdx.files.internal("they_are_coming.mp3"));
+
 
 	}
 
