@@ -21,17 +21,10 @@ public class MainMenuScreen implements Screen {
 	static private int HEIGHT = 720;
 
 	Texture background;
-	Texture logo;
 
 	Music musica;
 
     OrthographicCamera camera;
-
-	/*private Stage stage;
-    private Texture myTexture;
-    private TextureRegion myTextureRegion;
-    private TextureRegionDrawable myTexRegionDrawable;
-    private ImageButton button;*/
 
 
     public MainMenuScreen(final ThroneInvaders passed_game) {
@@ -39,11 +32,8 @@ public class MainMenuScreen implements Screen {
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WIDTH, HEIGHT);
-		background = new Texture("blurredbackground.png");
-		logo = new Texture("THRONE logo.png");
+		background = new Texture("telainicial.png");
 		musica = Gdx.audio.newMusic(Gdx.files.internal("they_are_coming.mp3"));
-
-
 	}
 
     @Override
@@ -56,12 +46,11 @@ public class MainMenuScreen implements Screen {
 		
 		game.batch.begin();
 		game.batch.draw(background, 0, 0);
-		game.batch.draw(logo, 380, 150);
 		game.batch.end();
 		
 		// If player activates the game, dispose of this menu.
 		if (Gdx.input.isTouched()) {
-			game.setScreen(new GameScreen(game, musica));	
+			game.setScreen(new StoryScreen(game, musica));	
 			dispose();
 		}
 
@@ -78,7 +67,6 @@ public class MainMenuScreen implements Screen {
 		musica.setLooping(true);
 		musica.setVolume(0.1f);
 		musica.play();
-		
 	}
 
 	@Override
@@ -95,7 +83,6 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		
 	}
 

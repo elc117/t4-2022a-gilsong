@@ -1,7 +1,10 @@
 package com.mygdx.game;
 
+import java.security.Key;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -15,46 +18,40 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 
 
-public class EndGameScreen implements Screen {
+public class StoryScreen implements Screen {
     final ThroneInvaders game;
 	static private int WIDTH = 1280;
 	static private int HEIGHT = 720;
 
 	Texture background;
-	String mensagem;
 
 	Music musica;
 
     OrthographicCamera camera;
 
-    public EndGameScreen(final ThroneInvaders passed_game, int score) {
+    public StoryScreen(final ThroneInvaders passed_game, Music musica) {
 		this.game = passed_game;
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WIDTH, HEIGHT);
-		background = new Texture("gameover.png");
-		musica = Gdx.audio.newMusic(Gdx.files.internal("they_are_coming.mp3"));
-		mensagem = "Seu score: " + Integer.toString(score);
-		musica.play();
-		musica.setVolume(0.1f);
+		background = new Texture("historia.png");
+		this.musica = musica;
 	}
 
     @Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 		
 		camera.update();
 		game.batch.setProjectionMatrix(camera.combined);
 		
 		game.batch.begin();
 		game.batch.draw(background, 0, 0);
-		game.font.draw(game.batch, mensagem , 420 , 450);
 		game.batch.end();
 		
 		// If player activates the game, dispose of this menu.
-		if (Gdx.input.isTouched()) {
+		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			game.setScreen(new GameScreen(game, musica));	
 			dispose();
 		}

@@ -61,11 +61,11 @@ public class GameScreen implements Screen {
     public GameScreen(final ThroneInvaders passed_game, Music musica) {
 		game = passed_game; 
 		
-		background = new Texture("background.png");
+		background = new Texture("backgroundB.png");
 		fireball = new Texture("fireball1.gif");
 		dragonFrames = new Frames(0, 4, 2, 205, 155, "dragon.png");
 		enemyFrames = new Frames(10, 7, 1, 64, 64, "enemy.png");
-		spire = new Texture("DragonLancesY.png");
+		spire = new Texture("lance14x69.png");
 		dragonFrames.createFrames();
 		enemyFrames.createFrames();
 		
@@ -75,7 +75,7 @@ public class GameScreen implements Screen {
 		touchPos = new Vector3();
 		
 		batch = new SpriteBatch();
-		dragonRef = new ImageReference(0f, 0f, 205f, 155f);
+		dragonRef = new ImageReference(0f, 0f, 180f, 100f);
 		fireballRef = new Fireball(dragonRef.x, dragonRef.y, 15f, 15f);
 		enemies = new Array<EnemyReference>();
 		spires = new Array<ImageReference>();
@@ -88,6 +88,7 @@ public class GameScreen implements Screen {
         damageSound = Gdx.audio.newSound(Gdx.files.internal("DamageSound.mp3"));
 
 		this.musica = musica;
+		timeSeconds = 5;
         score = 0;
 	}
 
@@ -105,7 +106,6 @@ public class GameScreen implements Screen {
 		game.batch.begin();
         game.batch.draw(background, 0, 0);
 		if (fireballRef.isVisible()) game.batch.draw(fireball, fireballRef.x, fireballRef.y);
-		game.batch.draw(dragonAnimation.getKeyFrame(elapsedTime, true), dragonRef.x, dragonRef.y);
 		for (EnemyReference enemyRef: enemies) {
 			game.batch.draw(enemyAnimation.getKeyFrame(elapsedTime,true), enemyRef.x, enemyRef.y);
 		}
@@ -113,6 +113,7 @@ public class GameScreen implements Screen {
 			if (spireRef.isVisible()) game.batch.draw(spire, spireRef.x, spireRef.y);
 		}
         game.font.draw(game.batch, Integer.toString(score) , 30,650);
+		game.batch.draw(dragonAnimation.getKeyFrame(elapsedTime, true), dragonRef.x, dragonRef.y);
 		game.batch.end();
 		
 		// controla movimento do dragão
@@ -141,10 +142,9 @@ public class GameScreen implements Screen {
 			if (enemyRef.isMoving() && enemyRef.y >= 130) enemyRef.y -= 0.2;
 			// se tocar na muralha
 			if (enemyRef.y < 130) {
-				enemyRef.resetPosition(enemyRef.x, enemyRef.y + 720f);
 				musica.stop();
-                game.setScreen(new EndGameScreen(game, score, musica));	
-				dispose();
+                game.setScreen(new EndGameScreen(game, score));	
+				break;
 			}
 
 			if (fireballRef.overlaps(enemyRef)) {
@@ -167,13 +167,11 @@ public class GameScreen implements Screen {
 			if(spireRef.y < -100) iter1.remove();
 
 			if (spireRef.overlaps(dragonRef)){
-				spireRef.setUnvisible();
 				musica.stop();
-				game.setScreen(new EndGameScreen(game, score, musica));	
-
+				game.setScreen(new EndGameScreen(game, score));	
 			}
 		}
-		if (timeSeconds >= 5) {
+		if (timeSeconds >= 10) {
 			setShots(7);
 			timeSeconds = 0;
 		}
@@ -193,7 +191,7 @@ public class GameScreen implements Screen {
 
 	private void spawnSpires() {
 		for (EnemyReference enemyRef: enemies) {
-			ImageReference spireRef = new ImageReference(enemyRef.x, enemyRef.y, 36f, 36f);
+			ImageReference spireRef = new ImageReference(enemyRef.x, enemyRef.y, 14f, 69f);
 			spires.add(spireRef);
 		}
 	}
@@ -220,8 +218,7 @@ public class GameScreen implements Screen {
 
     @Override
 	public void dispose() {
-		// Clear all the "native" resources
-		batch.dispose();
+		
 	}
 
 	@Override
