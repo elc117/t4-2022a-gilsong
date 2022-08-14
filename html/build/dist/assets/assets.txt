@@ -6,9 +6,9 @@ i:enemy.png:enemy-0a47fff3b7c519a9bc8d9ae1808b9275.png:139330:image/png:1
 i:fireball1.gif:fireball1-4f5fb380005401c48fe0f2c0e2e5d50d.gif:1172:image/gif:1
 a:fireballSound.mp3:fireballSound-c555824c3adbf67109afe71e02e2f07c.mp3:27885:audio/mpeg:1
 i:gameover.png:gameover-ab3d100f8a68e7cd43c9b1c658d0dd89.png:334229:image/png:1
-i:historia.png:historia-85da3b35fb2b4623374ad4b421f8cc8d.png:618511:image/png:1
+i:historia.png:historia-825cd4886f9dcdc1495b334de9af4873.png:614482:image/png:1
 i:lance14x69.png:lance14x69-b4c246055bb562df15eb8cb5ccbffce3.png:2341:image/png:1
-i:telainicial.png:telainicial-6092379f73d6fd917adbebe2b4d256c0.png:470784:image/png:1
+i:telainicial.png:telainicial-b2e79ce21afe33523821630d8aebd452.png:471145:image/png:1
 a:they_are_coming.mp3:they_are_coming-18286f6ea2d184b5c8bc9b46b4d3dadf.mp3:2253828:audio/mpeg:1
 t:com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl:particles.fragment-b90524761fdf09b0a836056d590c30b8.glsl:820:application/unknown:1
 t:com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl:particles.vertex-f25b8b2fae10b9bfa09bfdd484923148.glsl:2886:application/unknown:1
