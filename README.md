@@ -1,6 +1,8 @@
 # Throne Invaders
 As bruxas de fedora encontraram refúgio em um vilarejo logo após a grande muralha. Seu dever é impedir que soldados manjarolenos ultrapassem o monumento e alcancem as bruxas.
 
+Jogue online em: https://legendjunior.itch.io/throne-invaders
+
 # Créditos
 - [Dragon Lances](https://opengameart.org/content/dragon-lances)
 - [Hextiles](https://cuddlyclover.itch.io/fantasy-hex-tiles/download/eyJleHBpcmVzIjoxNjU4NzkwNTMzLCJpZCI6MTA5MTYwfQ%3d%3d.QaIs6Ufk8jl7J6RgqgcpGpyO9z4%3d)
