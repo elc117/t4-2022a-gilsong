@@ -3,6 +3,8 @@ As bruxas de fedora encontraram refúgio em um vilarejo logo após a grande mura
 
 Jogue online em: https://legendjunior.itch.io/throne-invaders
 
+![Imagem](https://github.com/elc117/t4-2022a-gilsong/blob/main/assets/telainicial.png?raw=true)
+
 # Créditos
 - [Dragon Lances](https://opengameart.org/content/dragon-lances)
 - [Hextiles](https://cuddlyclover.itch.io/fantasy-hex-tiles/download/eyJleHBpcmVzIjoxNjU4NzkwNTMzLCJpZCI6MTA5MTYwfQ%3d%3d.QaIs6Ufk8jl7J6RgqgcpGpyO9z4%3d)
